@@ -1,5 +1,12 @@
 {
 	"componentDirPath": "./src/components",
 	"pageDirPath": "./src/pages",
-	"suffix": "tsx"
+	"suffix": "jsx",
+	"componentType": "functional",
+	"exportType": "default",
+	"casingFix": "true",
+	"containerize": "false",
+	"classStateful": "true",
+	"functionHooks": "false",
+	"nest": "false"
 }
