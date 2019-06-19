@@ -34,23 +34,22 @@ const loadConfigs = type => {
 const main = () => {
 	if (args[0]) {
 		const command = args[0].toLowerCase();
-		switch (command) {
-			case 'gc':
-				loadConfigs('c');
-				break;
-			case 'gp':
-				loadConfigs('p');
-				break;
-			case 'version' || '--version' || '-v':
-				displayVersion();
-				break;
-			default:
-				console.log(`Unknown command ${args[0]}`);
-				break;
+		if (command === 'gc') {
+			loadConfigs('c');
+		} else if (command === 'gp') {
+			loadConfigs('p');
+		} else if (/^version$|^--version$|^-v$/i.test(command)) {
+			displayVersion();
+		} else if (/^help$|^--help$|^-h$/i.test(command)) {
+			displayHelp();
+		} else {
+			console.log(`Unknown command '${args[0]}'`);
+			console.log('Type \'rc help\' to display documentation');
 		}
 	}
 	else {
 		console.log('Please specify a command to run.');
+		console.log('Type \'rc help\' to display documentation');
 	}
 }
 
@@ -59,6 +58,13 @@ const displayVersion = () => {
 		if (err) throw err;
 		const { version } = JSON.parse(data);
 		console.log(`\nReact-cli version ${version}\n`);
+	});
+}
+const displayHelp = () => {
+	fs.readFile(`${__dirname}/README.md`, 'utf8', function (err, data) {
+		if (err) throw err;
+		const api = data.substring(data.indexOf('## `rc <command> <options> <name>`'), data.indexOf('## Config options:') - 1);
+		console.log(`\n${api}\n`);
 	});
 }
 
