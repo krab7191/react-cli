@@ -43,7 +43,7 @@ const main = () => {
 		} else if (/^help$|^--help$|^-h$/i.test(command)) {
 			displayHelp();
 		} else {
-			console.log(`Unknown command '${args[0]}'`);
+			console.log(`React-cli: command not found: ${args[0]}`);
 			console.log('Type \'rc help\' to display documentation');
 		}
 	}
