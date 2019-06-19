@@ -1,0 +1,5 @@
+{
+	"componentDirPath": "./src/components",
+	"pageDirPath": "./src/pages",
+	"suffix": "tsx"
+}
