@@ -4,6 +4,8 @@ const fs = require('fs');
 const args = process.argv.slice(2);
 // Assumes this is your client folder; aka 'view' root
 const execDir = process.cwd();
+// Import functionality for the 'config' command
+const conf = require('./config/config');
 
 let config = {};
 
@@ -38,6 +40,8 @@ const main = () => {
 			loadConfigs('c');
 		} else if (command === 'gp') {
 			loadConfigs('p');
+		} else if (command === 'config') {
+			conf.main(execDir);
 		} else if (/^version$|^--version$|^-v$/i.test(command)) {
 			displayVersion();
 		} else if (/^help$|^--help$|^-h$/i.test(command)) {
