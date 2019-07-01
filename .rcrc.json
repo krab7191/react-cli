@@ -1,6 +1,6 @@
 {
-	"componentDirPath": "./src/components",
-	"pageDirPath": "./src/pages",
+	"componentDirPath": "./src/Components",
+	"pageDirPath": "./src/Pages",
 	"suffix": "jsx",
 	"componentType": "functional",
 	"exportType": "default",

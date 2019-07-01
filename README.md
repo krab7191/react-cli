@@ -14,7 +14,17 @@ A flexible set of command line tools which mimics Angular's component generation
 	- -o <output directory>: Specifies directory to write to. Default: ./src/components | ./src/pages respectively
 	- -s <suffix>: Specify the suffix to use for files. Default: 'jsx'
 	- -t <type>: Specify the componentType
-	- -e <type>: Specify the exportType
+	- -e <type>: Specify the exportType: 
+		Default: 
+		`
+		// index.js
+		export { default } from './Component';
+		`
+		Wildcard: (more useful for named exports, TS)
+		`
+		// index.js
+		export * from './Component';
+		`
 	- -c : Instructs to containerize the component
 	- -n : Instructs to nest component in existing component folder. Requires parent folder name after component name, for example `rc gc -n Brand Header` will generate a 'Brand' subcomponent of existing 'Header' component
 
