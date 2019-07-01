@@ -25,9 +25,9 @@ module.exports = {
 						])
 						.then(ans => {
 							if (ans.confirm === 'Yes') {
-								cyanLogger(` . . . Creating source folder . . . `);
 								const mkdir = exec('mkdir -p ./src/Components && mkdir ./src/Pages', { cwd: str }, function (err, stdout, stdin) {
-
+									cyanLogger(`\n . . . Creating source folder . . . \n`);
+									cyanLogger(`Created                             \n- src                               \n   |_ Components                    \n   |_ Pages                         \n                                    `)
 								});
 								mkdir.on('exit', function (code) {
 									// exit code is code
