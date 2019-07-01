@@ -17,14 +17,14 @@ module.exports = {
 					inquirer
 						.prompt([
 							{
-								message: 'No package file detected. You don\'t appear to be in a node folder. It\'s recommended to run React-cli from your react project root. Continue anyway?',
+								message: 'No package file detected. You don\'t appear to be in a node folder. It\'s recommended to run React-cli from your react project root. Create the src folders and continue, or continue without creating?',
 								name: 'confirm',
 								type: 'list',
-								choices: ["Yes", "No"]
+								choices: ["Create 'src' and continue", "Continue without creating", "Exit setup"]
 							}
 						])
 						.then(ans => {
-							if (ans.confirm === 'Yes') {
+							if (ans.confirm === "Create 'src' and continue") {
 								const mkdir = exec('mkdir -p ./src/Components && mkdir ./src/Pages', { cwd: str }, function (err, stdout, stdin) {
 									reactLogger(whitespaceAdder(null, 90));
 									reactLogger(` . . . Creating source folder . . . `);
@@ -38,7 +38,10 @@ module.exports = {
 								});
 								logArt();
 							}
-							else {
+							else if (ans.confirm === "Continue without creating") {
+								reactLogger(whitespaceAdder(null, 90));
+								initConfig(str);
+							} else {
 								process.exit(0);
 							}
 						});
@@ -115,7 +118,7 @@ const initConfig = creationDir => {
 			choices: ["false", "true"]
 		}
 	]).then(ans => {
-		const contents = convertObjToStrictJson(ans);
+		const contents = convertObjToStrictJson(ans, creationDir);
 		fs.writeFile(`${creationDir}/.rcrc.json`, contents, err => {
 			if (err) {
 				reactLogger(err);
@@ -130,14 +133,14 @@ const initConfig = creationDir => {
 }
 
 // Convert the output from inquirer to JSON (double quote keys and values)
-const convertObjToStrictJson = obj => {
+const convertObjToStrictJson = (obj, root) => {
 	const keys = Object.keys(obj);
 	const vals = Object.values(obj);
 	let JsonObj = '{';
 	keys.forEach((key, i) => {
 		JsonObj = JsonObj + '"' + key + '":"' + vals[i] + '",';
 	});
-	return JsonObj.substring(0, JsonObj.length - 1) + '}';
+	return JsonObj + `"projectRoot":"${root}"}`;
 }
 
 // Add whitespace to a line to pad out terminal colors
