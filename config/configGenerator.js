@@ -3,13 +3,15 @@ const inquirer = require('inquirer');
 const fs = require('fs');
 const chalk = require('chalk');
 const log = console.log;
+const { exec } = require('child_process');
 
 const art = fs.readFileSync(__dirname + '/../asciArt.txt', 'utf8');
 
 // Inquirer functionality for generating config file
 module.exports = {
+	// str is a directory string. (Usually current directory)
 	main: function (str) {
-		fs.readFile(`${str} /package.json`, 'utf8', function (err, data) {
+		fs.readFile(`${str}/package.json`, 'utf8', function (err, data) {
 			if (err) {
 				if (err.code === 'ENOENT') {
 					inquirer
@@ -23,6 +25,13 @@ module.exports = {
 						])
 						.then(ans => {
 							if (ans.confirm === 'Yes') {
+								cyanLogger(` . . . Creating source folder . . . `);
+								const mkdir = exec('mkdir -p ./src/Components && mkdir ./src/Pages', { cwd: str }, function (err, stdout, stdin) {
+
+								});
+								mkdir.on('exit', function (code) {
+									// exit code is code
+								});
 								initConfig();
 							}
 							else {
@@ -39,6 +48,10 @@ module.exports = {
 };
 
 const initConfig = () => {
-	log(chalk.black.bgCyan(art));
+	cyanLogger(art);
 	// console.log(asciArt);
+}
+
+const cyanLogger = input => {
+	log(chalk.black.bgCyan(input));
 }

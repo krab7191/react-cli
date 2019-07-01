@@ -5,7 +5,7 @@ const args = process.argv.slice(2);
 // Assumes this is your client folder; aka 'view' root
 const execDir = process.cwd();
 // Import functionality for the 'config' command
-const conf = require('./config/config');
+const conf = require('./config/configGenerator');
 
 let config = {};
 
@@ -13,10 +13,10 @@ const loadConfigs = type => {
 	console.log(`Welcome to React CLI!\nLoading configs...\n`);
 
 	// Look for a user config, if not found load defaults
-	fs.readFile(`${execDir}/.rc.config.json`, 'utf8', (err, data) => {
+	fs.readFile(`${execDir}/.rcrc.json`, 'utf8', (err, data) => {
 		if (err && err.code === 'ENOENT') {
 			console.log(`Default configuration...\n`);
-			fs.readFile(`${__dirname}/.rc.config.json`, 'utf8', (err, data) => {
+			fs.readFile(`${__dirname}/.rcrc.json`, 'utf8', (err, data) => {
 				if (err) {
 					console.log(`Error loading default configuration...`, err);
 				}
