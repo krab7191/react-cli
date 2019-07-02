@@ -79,7 +79,7 @@ const initConfig = creationDir => {
 			message: `Do you want to create Class or Functional components by default?`,
 			name: "componentType",
 			type: 'list',
-			choices: ["Functional", "Class"]
+			choices: ["functional", "class"]
 		},
 		{
 			message: `What type of component export pattern do you want to use by default? (Enter \`rc help\` to read more about this)`,
@@ -136,11 +136,11 @@ const initConfig = creationDir => {
 const convertObjToStrictJson = (obj, root) => {
 	const keys = Object.keys(obj);
 	const vals = Object.values(obj);
-	let JsonObj = '{';
+	let JsonObj = `{\n`;
 	keys.forEach((key, i) => {
-		JsonObj = JsonObj + '"' + key + '":"' + vals[i] + '",';
+		JsonObj = JsonObj + '"' + key + '":"' + vals[i] + `",\n`;
 	});
-	return JsonObj + `"projectRoot":"${root}"}`;
+	return JsonObj + `"projectRoot":"${root}"\n}`;
 }
 
 // Add whitespace to a line to pad out terminal colors
