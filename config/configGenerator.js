@@ -25,21 +25,21 @@ module.exports = {
 						])
 						.then(ans => {
 							if (ans.confirm === "Create 'src' and continue") {
-								const mkdir = exec('mkdir -p ./src/Components && mkdir ./src/Pages', { cwd: str }, function (err, stdout, stdin) {
-									reactLogger(whitespaceAdder(null, 90));
+								exec('mkdir -p ./src/Components && mkdir ./src/Pages', { cwd: str }, function (err, stdout, stdin) {
+									reactLogger(whitespaceAdder(90));
 									reactLogger(` . . . Creating source folder . . . `);
-									reactLogger(whitespaceAdder(null, 90));
+									reactLogger(whitespaceAdder(90));
 									reactLogger(`Created`);
 									reactLogger(`- src`);
 									reactLogger(`   |_ Components`);
 									reactLogger(`   |_ Pages`);
-									reactLogger(whitespaceAdder(null, 90));
+									reactLogger(whitespaceAdder(90));
 									initConfig(str);
 								});
 								logArt();
 							}
 							else if (ans.confirm === "Continue without creating") {
-								reactLogger(whitespaceAdder(null, 90));
+								console.log(`\n`);
 								initConfig(str);
 							} else {
 								process.exit(0);
@@ -124,9 +124,9 @@ const initConfig = creationDir => {
 				reactLogger(err);
 			}
 			else {
-				reactLogger(whitespaceAdder(null, 90));
+				reactLogger(whitespaceAdder(90));
 				reactLogger(`Config file created successfully!`);
-				reactLogger(whitespaceAdder(null, 90));
+				reactLogger(whitespaceAdder(90));
 			}
 		});
 	}).catch(err => { throw err });
@@ -144,12 +144,14 @@ const convertObjToStrictJson = (obj, root) => {
 }
 
 // Add whitespace to a line to pad out terminal colors
-const whitespaceAdder = (str, num) => {
-	if (num) {
-		return new Array(num).join(` `);
+const whitespaceAdder = (inp) => {
+	if (typeof inp === `number`) {
+		return new Array(inp).join(` `);
+	} else if (typeof inp === `string`) {
+		const len = inp.length > 90 ? 0 : 90 - inp.length;
+		return inp + new Array(len).join(` `);
 	} else {
-		const len = str.length > 90 ? 0 : 90 - str.length;
-		return str + new Array(len).join(` `);
+		console.log(`Can't add whitespace to a non-string or non-number value.`);
 	}
 }
 
