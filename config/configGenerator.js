@@ -119,21 +119,34 @@ const initConfig = creationDir => {
 		}
 	]).then(ans => {
 		const contents = convertObjToStrictJson(ans, creationDir);
-		fs.writeFile(`${creationDir}/.rcrc.json`, contents, err => {
-			if (err) {
-				log(pad(err));
+		inquirer.prompt([
+			{
+				message: `\nYour config will look like this:\n${contents}\n\nCreate config file now?`,
+				name: 'confirm',
+				type: 'list',
+				choices: ['Yes', 'No']
 			}
-			else {
-				log(pad(90));
-				log(pad(`Config file created successfully!`));
-				log(pad(90));
-				// Determine if React CLI is being run from a global or local install,
-				// save the root if local is found
-				let rcParent = __dirname.substring(0, __dirname.lastIndexOf('/'));
-				rcParent = rcParent.substring(0, rcParent.lastIndexOf('/'));
-				isLocalInstall(saveProjectRoot, { dir: rcParent, projectRoot: creationDir });
+		]).then(ans => {
+			if (ans.confirm === 'Yes') {
+				fs.writeFile(`${creationDir}/.rcrc.json`, contents, err => {
+					if (err) {
+						log(pad(err));
+					}
+					else {
+						log(pad(90));
+						log(pad(`Config file created successfully!`));
+						log(pad(90));
+						// Determine if React CLI is being run from a global or local install,
+						// save the root if local is found
+						let rcParent = __dirname.substring(0, __dirname.lastIndexOf('/'));
+						rcParent = rcParent.substring(0, rcParent.lastIndexOf('/'));
+						isLocalInstall(saveProjectRoot, { dir: rcParent, projectRoot: creationDir });
+					}
+				});
+			} else {
+				log(pad(`Abort config creation.`));
 			}
-		});
+		}).catch(err => { throw err });
 	}).catch(err => { throw err });
 }
 
@@ -143,9 +156,9 @@ const convertObjToStrictJson = (obj, root) => {
 	const vals = Object.values(obj);
 	let JsonObj = `{\n`;
 	keys.forEach((key, i) => {
-		JsonObj = JsonObj + '"' + key + '":"' + vals[i] + `",\n`;
+		JsonObj = `${JsonObj}	"${key}":"${vals[i]}",\n`;
 	});
-	return JsonObj + `"projectRoot":"${root}"\n}`;
+	return JsonObj + `	"projectRoot":"${root}"\n}`;
 }
 
 const isLocalInstall = (successCallback, optionsObj) => {

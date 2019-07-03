@@ -76,7 +76,7 @@ const displayVersion = () => {
 			log(pad(`ERR! The React CLI package is missing its package.json. This is not usual behavior. Try uninstalling and reinstalling the package.`));
 		}
 		log(pad(90));
-		log(pad(`React-cli version ${JSON.parse(data.version)}`));
+		log(pad(`React-cli version ${JSON.parse(data).version}`));
 		log(pad(90));
 	});
 }
