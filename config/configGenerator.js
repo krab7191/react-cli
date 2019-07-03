@@ -170,9 +170,11 @@ const isLocalInstall = (successCallback, optionsObj) => {
 
 	exec('ls | grep node_modules', { cwd: dir }, function (error, stdout) {
 		if (stdout.length !== 0) {
+			console.log('Node modules found!');
 			// Node modules found! Look for package.json
 			exec('ls | grep package.json', { cwd: dir }, function (error, stdout) {
 				if (stdout.length !== 0) {
+					console.log('package.json found!');
 					// package.json found! It's a local install, save rootDir
 					successCallback(optionsObj);
 				}
