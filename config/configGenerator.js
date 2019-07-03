@@ -9,7 +9,7 @@ const pad = require('../helpers').whitespaceAdder;
 
 // Inquirer functionality for generating config file
 module.exports = {
-	// str is a directory string. (Usually current directory)
+	// str is a directory string. (Current directory)
 	main: function (str) {
 		fs.readFile(`${str}/package.json`, 'utf8', function (err, data) {
 			if (err) {
@@ -17,7 +17,7 @@ module.exports = {
 					inquirer
 						.prompt([
 							{
-								message: 'No package file detected. You don\'t appear to be in a node folder. It\'s recommended to run React-cli from your react project root. Create the src folders and continue, or continue without creating?',
+								message: 'No package file detected. You don\'t appear to be in a node folder. It\'s recommended to run the config script from your react project root. Create the src folders anyway and continue, or continue without creating?',
 								name: 'confirm',
 								type: 'list',
 								choices: ["Create 'src' and continue", "Continue without creating", "Exit setup"]
@@ -127,6 +127,11 @@ const initConfig = creationDir => {
 				log(pad(90));
 				log(pad(`Config file created successfully!`));
 				log(pad(90));
+				// Determine if React CLI is being run from a global or local install,
+				// save the root if local is found
+				let rcParent = __dirname.substring(0, __dirname.lastIndexOf('/'));
+				rcParent = rcParent.substring(0, rcParent.lastIndexOf('/'));
+				isLocalInstall(saveProjectRoot, { dir: rcParent, projectRoot: creationDir });
 			}
 		});
 	}).catch(err => { throw err });
@@ -142,3 +147,45 @@ const convertObjToStrictJson = (obj, root) => {
 	});
 	return JsonObj + `"projectRoot":"${root}"\n}`;
 }
+
+const isLocalInstall = (successCallback, optionsObj) => {
+	const options = { ...optionsObj };
+	const { dir } = options;
+
+	exec('ls | grep node_modules', { cwd: dir }, function (error, stdout) {
+		if (stdout.length !== 0) {
+			// Node modules found! Look for package.json
+			exec('ls | grep package.json', { cwd: dir }, function (error, stdout) {
+				if (stdout.length !== 0) {
+					// package.json found! It's a local install, save rootDir
+					successCallback(optionsObj);
+				}
+				else if (error) {
+					// log(pad(`Node modules found, but no package.json. Running global React-cli install`))
+					return;
+				} else {
+					log(`Something very weird happened`);
+				}
+			});
+		} else if (error) {
+			// node_modules not found, go up a level and recurse
+			options.dir = dir.substring(0, dir.lastIndexOf('/'));
+			isLocalInstall(successCallback, options);
+		} else {
+			log('Something very weird happened');
+		}
+	});
+}
+
+const saveProjectRoot = options => {
+	const conf = __dirname.substring(0, __dirname.lastIndexOf('/'));
+	fs.readFile(`${conf}/.rcrc.json`, 'utf8', (err, data) => {
+		if (err) throw err;
+		const obj = JSON.parse(data);
+		obj.projectRoot = options.projectRoot;
+		fs.writeFile(`${conf}/.rcrc.json`, JSON.stringify(obj), (err) => {
+			if (err) throw err;
+		});
+	});
+}
+saveProjectRoot({ projectRoot: process.cwd() });
