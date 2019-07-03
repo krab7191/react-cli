@@ -13,7 +13,7 @@ A flexible set of command line tools which mimics Angular's component generation
 - options: 
 	- -o <output directory>: Specifies directory to write to. Default: ./src/components | ./src/pages respectively
 	- -s <suffix>: Specify the suffix to use for files. Default: 'jsx'
-	- -t <type>: Specify the componentType
+	- -t <type>: Specify the componentType (class | functional)
 	- -e <type>: Specify the exportType: 
 		Default: 
 		```
@@ -26,7 +26,7 @@ A flexible set of command line tools which mimics Angular's component generation
 		export * from './Component';
 		```
 	- -c : Instructs to containerize the component
-	- -n : Instructs to nest component in existing component folder. Requires parent folder name after component name, for example `rc gc -n Brand Header` will generate a 'Brand' subcomponent of existing 'Header' component
+	- -n : Instructs to nest component in parent folder, and create the parent if it doesn't exist. Requires parent folder name after component name, for example `rc gc -n ImgCard ImgContainer` will generate an 'ImgCard' subcomponent of existing (or newly created) 'ImgContainer' component.
 
 
 ## Config options:
@@ -49,4 +49,4 @@ A flexible set of command line tools which mimics Angular's component generation
 
 - functionHooks: Default false. Whether or not to generate hook code in your functional component
 
-- nest: Default false. If true the component will be generated as a child of an existing component
+- nest: Default false. If true the component will be generated as a child of a newly created parent component (must specify both component names)

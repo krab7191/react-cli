@@ -6,32 +6,11 @@ const args = process.argv.slice(2);
 const execDir = process.cwd();
 // Import functionality for the 'config' command
 const conf = require('./config/configGenerator');
+// Terminal message helpers
+const log = require('./helpers').logReactColors;
+const pad = require('./helpers').whitespaceAdder;
 
-let config = {};
-
-const loadConfigs = type => {
-	console.log(`Welcome to React CLI!\nLoading configs...\n`);
-
-	// Look for a user config, if not found load defaults
-	fs.readFile(`${execDir}/.rcrc.json`, 'utf8', (err, data) => {
-		if (err && err.code === 'ENOENT') {
-			console.log(`Default configuration...\n`);
-			fs.readFile(`${__dirname}/.rcrc.json`, 'utf8', (err, data) => {
-				if (err) {
-					console.log(`Error loading default configuration...`, err);
-				}
-				config = JSON.parse(data);
-				generate(type);
-			});
-		}
-		else if (!err) {
-			console.log(`User defined configuration... \n`);
-			config = JSON.parse(data);
-			generate(type);
-		}
-	});
-
-}
+const componentGenerator = require('./generators/componentGenerator');
 
 const main = () => {
 	if (args[0]) {
@@ -57,23 +36,50 @@ const main = () => {
 	}
 }
 
+const loadConfigs = type => {
+	log(pad(`Loading config...\n`));
+
+	// Look for a user config, if not found load defaults
+	fs.readFile(`${execDir}/.rcrc.json`, 'utf8', (err, data) => {
+		if (err && err.code === 'ENOENT') {
+			console.log(`Default configuration...\n`);
+			fs.readFile(`${__dirname}/.rcrc.json`, 'utf8', (err, data) => {
+				if (err) {
+					console.log(`Error loading default configuration...`, err);
+					process.exit(0);
+				}
+				componentGenerator(type, args, JSON.parse(data));
+			});
+		}
+		else if (!err) {
+			componentGenerator(type, args, JSON.parse(data));
+		}
+	});
+}
+
 const displayVersion = () => {
 	fs.readFile(`${__dirname}/package.json`, 'utf8', function (err, data) {
-		if (err) throw err;
-		const { version } = JSON.parse(data);
-		console.log(`\nReact-cli version ${version}\n`);
+		if (err) {
+			log(err);
+			log(pad(`ERR! The React CLI package is missing its package.json. This is not usual behavior. Try uninstalling and reinstalling the package.`));
+		}
+		log(pad(90));
+		log(pad(`React-cli version ${JSON.parse(data.version)}`));
+		log(pad(90));
 	});
 }
 const displayHelp = () => {
 	fs.readFile(`${__dirname}/README.md`, 'utf8', function (err, data) {
-		if (err) throw err;
+		if (err) {
+			log(pad(`ERR! No readme found.`));
+		}
 		const api = data.substring(data.indexOf('## `rc <command> <options> <name>`'), data.indexOf('## Config options:') - 1);
-		console.log(`\n${api}\n`);
+		log(pad(90));
+		log(pad(api));
+		log(pad(90));
 	});
 }
 
-const generate = type => {
-	console.log(`Generating ${type}`);
-}
+
 
 main();

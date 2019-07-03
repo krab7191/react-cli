@@ -2,10 +2,10 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 const chalk = require('chalk');
-const log = console.log;
 const { exec } = require('child_process');
-
-const art = fs.readFileSync(__dirname + '/../asciiArt.txt', 'utf8');
+const art = require('../helpers').logArt;
+const log = require('../helpers').logReactColors;
+const pad = require('../helpers').whitespaceAdder;
 
 // Inquirer functionality for generating config file
 module.exports = {
@@ -26,20 +26,20 @@ module.exports = {
 						.then(ans => {
 							if (ans.confirm === "Create 'src' and continue") {
 								exec('mkdir -p ./src/Components && mkdir ./src/Pages', { cwd: str }, function (err, stdout, stdin) {
-									reactLogger(whitespaceAdder(90));
-									reactLogger(` . . . Creating source folder . . . `);
-									reactLogger(whitespaceAdder(90));
-									reactLogger(`Created`);
-									reactLogger(`- src`);
-									reactLogger(`   |_ Components`);
-									reactLogger(`   |_ Pages`);
-									reactLogger(whitespaceAdder(90));
+									log(pad(90));
+									log(pad(` . . . Creating source folder . . . `));
+									log(pad(90));
+									log(pad(`Created`));
+									log(pad(`- src`));
+									log(pad(`   |_ Components`));
+									log(pad(`   |_ Pages`));
+									log(pad(90));
 									initConfig(str);
 								});
-								logArt();
+								art();
 							}
 							else if (ans.confirm === "Continue without creating") {
-								console.log(`\n`);
+								art();
 								initConfig(str);
 							} else {
 								process.exit(0);
@@ -48,7 +48,7 @@ module.exports = {
 				}
 			}
 			else {
-				logArt();
+				art();
 				initConfig(str);
 			}
 		});
@@ -121,12 +121,12 @@ const initConfig = creationDir => {
 		const contents = convertObjToStrictJson(ans, creationDir);
 		fs.writeFile(`${creationDir}/.rcrc.json`, contents, err => {
 			if (err) {
-				reactLogger(err);
+				log(pad(err));
 			}
 			else {
-				reactLogger(whitespaceAdder(90));
-				reactLogger(`Config file created successfully!`);
-				reactLogger(whitespaceAdder(90));
+				log(pad(90));
+				log(pad(`Config file created successfully!`));
+				log(pad(90));
 			}
 		});
 	}).catch(err => { throw err });
@@ -141,26 +141,4 @@ const convertObjToStrictJson = (obj, root) => {
 		JsonObj = JsonObj + '"' + key + '":"' + vals[i] + `",\n`;
 	});
 	return JsonObj + `"projectRoot":"${root}"\n}`;
-}
-
-// Add whitespace to a line to pad out terminal colors
-const whitespaceAdder = (inp) => {
-	if (typeof inp === `number`) {
-		return new Array(inp).join(` `);
-	} else if (typeof inp === `string`) {
-		const len = inp.length > 90 ? 0 : 90 - inp.length;
-		return inp + new Array(len).join(` `);
-	} else {
-		console.log(`Can't add whitespace to a non-string or non-number value.`);
-	}
-}
-
-// Display the ascii art
-const logArt = () => {
-	reactLogger(art);
-}
-
-const reactLogger = input => {
-	// #64DAFB -> React blue, #292C34 react dark grey
-	log(chalk.hex('#64DAFB').bgHex('#292C34')(whitespaceAdder(input)));
 }
