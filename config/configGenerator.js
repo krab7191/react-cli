@@ -144,9 +144,10 @@ const initConfig = creationDir => {
 				// 		isLocalInstall(saveProjectRoot, { dir: rcParent, projectRoot: creationDir });
 				// 	}
 				// });
-						let rcParent = __dirname.substring(0, __dirname.lastIndexOf('/'));
+						const curr = __dirname;
+						let rcParent = curr.substring(0, curr.lastIndexOf('/'));
 						rcParent = rcParent.substring(0, rcParent.lastIndexOf('/'));
-						console.log(__dirname);
+						console.log(curr);
 						console.log(rcParent);
 						isLocalInstall(saveProjectRoot, { dir: rcParent, projectRoot: creationDir });
 			} else {
