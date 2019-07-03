@@ -16,7 +16,7 @@ const whitespaceAdder = (inp) => {
 		const len = inp.length > 90 ? 0 : 90 - inp.length;
 		return inp + new Array(len).join(` `);
 	} else {
-		console.log(`Can't add whitespace to a non-string or non-number value.`);
+		console.warn(`Can't add whitespace to a non-string or non-number value.`);
 		return inp;
 	}
 }

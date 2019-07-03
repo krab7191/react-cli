@@ -56,7 +56,6 @@ module.exports = {
 };
 
 const initConfig = creationDir => {
-	console.log(__dirname);
 	inquirer.prompt([
 		{
 			message: `\nWelcome to React-CLI. We will ask you a few questions about your project workflow to generate a custom config and make component generation quick and easy. The config can always be superseded by command line arguments.\n\nWhat is the path to your component folder?`,
@@ -166,29 +165,23 @@ const convertObjToStrictJson = (obj, root) => {
 const isLocalInstall = (successCallback, optionsObj) => {
 	const options = { ...optionsObj };
 	const { dir } = options;
-	console.log(`isLocalInstall: ${dir}`);
 
 	exec('ls | grep node_modules', { cwd: dir }, function (error, stdout) {
 		if (stdout.length !== 0) {
-			console.log('Node modules found!');
 			// Node modules found! Look for package.json
 			exec('ls | grep package.json', { cwd: dir }, function (error, stdout) {
 				if (stdout.length !== 0) {
-					console.log('package.json found!');
+					log(pad(`Saving project root: ${optionsObj.projectRoot}`))
 					// package.json found! It's a local install, save rootDir
 					successCallback(optionsObj);
 				}
-				else if (error) {
-					console.log(`Err: ${error}`);
-					// log(pad(`Node modules found, but no package.json. Running global React-cli install`))
-				} else {
+				else if (!error) {
 					log(`Something very weird happened`);
 				}
 			});
 		} else if (error) {
 			// node_modules not found, go up a level and recurse
 			options.dir = dir.substring(0, dir.lastIndexOf('/'));
-			console.log(options.dir);
 			isLocalInstall(successCallback, options);
 			return;
 		} else {
