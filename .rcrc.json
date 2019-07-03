@@ -1,7 +1,7 @@
 {
 	"projectRoot": "",
-	"componentDirPath": "./src/Components",
-	"pageDirPath": "./src/Pages",
+	"componentDirPath": "/src/Components",
+	"pageDirPath": "/src/Pages",
 	"suffix": "jsx",
 	"componentType": "functional",
 	"exportType": "default",

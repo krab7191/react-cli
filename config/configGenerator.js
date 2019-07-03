@@ -61,13 +61,13 @@ const initConfig = creationDir => {
 			message: `\nWelcome to React-CLI. We will ask you a few questions about your project workflow to generate a custom config and make component generation quick and easy. The config can always be superseded by command line arguments.\n\nWhat is the path to your component folder?`,
 			name: "componentDirPath",
 			type: 'input',
-			default: "./src/Components"
+			default: "/src/Components"
 		},
 		{
 			message: `What is the path to your pages / frontend routes folder?`,
 			name: "pageDirPath",
 			type: 'input',
-			default: "./src/Pages"
+			default: "/src/Pages"
 		},
 		{
 			message: `What is your default file extension?`,
