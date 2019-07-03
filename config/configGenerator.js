@@ -129,27 +129,22 @@ const initConfig = creationDir => {
 			}
 		]).then(ans => {
 			if (ans.confirm === 'Yes') {
-				// fs.writeFile(`${creationDir}/.rcrc.json`, contents, err => {
-				// 	if (err) {
-				// 		log(pad(err));
-				// 	}
-				// 	else {
-				// 		log(pad(90));
-				// 		log(pad(`Config file created successfully!`));
-				// 		log(pad(90));
-				// 		// Determine if React CLI is being run from a global or local install,
-				// 		// save the root if local is found
-				// 		let rcParent = __dirname.substring(0, __dirname.lastIndexOf('/'));
-				// 		rcParent = rcParent.substring(0, rcParent.lastIndexOf('/'));
-				// 		isLocalInstall(saveProjectRoot, { dir: rcParent, projectRoot: creationDir });
-				// 	}
-				// });
+				fs.writeFile(`${creationDir}/.rcrc.json`, contents, err => {
+					if (err) {
+						log(pad(err));
+					}
+					else {
+						log(pad(90));
+						log(pad(`Config file created successfully!`));
+						log(pad(90));
+						// Determine if React CLI is being run from a global or local install,
+						// save the root if local is found
 						const curr = __dirname;
 						let rcParent = curr.substring(0, curr.lastIndexOf('/'));
 						rcParent = rcParent.substring(0, rcParent.lastIndexOf('/'));
-						console.log(curr);
-						console.log(rcParent);
 						isLocalInstall(saveProjectRoot, { dir: rcParent, projectRoot: creationDir });
+					}
+				});
 			} else {
 				log(pad(`Abort config creation.`));
 			}
@@ -171,7 +166,7 @@ const convertObjToStrictJson = (obj, root) => {
 const isLocalInstall = (successCallback, optionsObj) => {
 	const options = { ...optionsObj };
 	const { dir } = options;
-	console.log(options, dir);
+	console.log(`isLocalInstall: ${dir}`);
 
 	exec('ls | grep node_modules', { cwd: dir }, function (error, stdout) {
 		if (stdout.length !== 0) {
@@ -189,10 +184,11 @@ const isLocalInstall = (successCallback, optionsObj) => {
 				}
 			});
 		} else if (error) {
-			console.log(`Recursing`, error);
 			// node_modules not found, go up a level and recurse
 			options.dir = dir.substring(0, dir.lastIndexOf('/'));
+			console.log(options.dir);
 			isLocalInstall(successCallback, options);
+			return;
 		} else {
 			log('Something very weird happened');
 		}
