@@ -1,6 +1,8 @@
 # react-cli
 A flexible set of command line tools which mimics Angular's component generation functionality for some common React design patterns.
 
+# NOTE: This package is not finished and should not be installed yet. It does not work.
+
 ## `rc <command> <options> <name>`
 
 - command: ['gc', 'gp', 'help' | '--help' | '-h', 'config', 'version' | '--version' | '-v' ]
