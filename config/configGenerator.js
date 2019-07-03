@@ -56,6 +56,7 @@ module.exports = {
 };
 
 const initConfig = creationDir => {
+	console.log(__dirname);
 	inquirer.prompt([
 		{
 			message: `\nWelcome to React-CLI. We will ask you a few questions about your project workflow to generate a custom config and make component generation quick and easy. The config can always be superseded by command line arguments.\n\nWhat is the path to your component folder?`,
@@ -128,21 +129,26 @@ const initConfig = creationDir => {
 			}
 		]).then(ans => {
 			if (ans.confirm === 'Yes') {
-				fs.writeFile(`${creationDir}/.rcrc.json`, contents, err => {
-					if (err) {
-						log(pad(err));
-					}
-					else {
-						log(pad(90));
-						log(pad(`Config file created successfully!`));
-						log(pad(90));
-						// Determine if React CLI is being run from a global or local install,
-						// save the root if local is found
+				// fs.writeFile(`${creationDir}/.rcrc.json`, contents, err => {
+				// 	if (err) {
+				// 		log(pad(err));
+				// 	}
+				// 	else {
+				// 		log(pad(90));
+				// 		log(pad(`Config file created successfully!`));
+				// 		log(pad(90));
+				// 		// Determine if React CLI is being run from a global or local install,
+				// 		// save the root if local is found
+				// 		let rcParent = __dirname.substring(0, __dirname.lastIndexOf('/'));
+				// 		rcParent = rcParent.substring(0, rcParent.lastIndexOf('/'));
+				// 		isLocalInstall(saveProjectRoot, { dir: rcParent, projectRoot: creationDir });
+				// 	}
+				// });
 						let rcParent = __dirname.substring(0, __dirname.lastIndexOf('/'));
 						rcParent = rcParent.substring(0, rcParent.lastIndexOf('/'));
+						console.log(__dirname);
+						console.log(rcParent);
 						isLocalInstall(saveProjectRoot, { dir: rcParent, projectRoot: creationDir });
-					}
-				});
 			} else {
 				log(pad(`Abort config creation.`));
 			}
@@ -164,6 +170,7 @@ const convertObjToStrictJson = (obj, root) => {
 const isLocalInstall = (successCallback, optionsObj) => {
 	const options = { ...optionsObj };
 	const { dir } = options;
+	console.log(options, dir);
 
 	exec('ls | grep node_modules', { cwd: dir }, function (error, stdout) {
 		if (stdout.length !== 0) {
@@ -174,13 +181,14 @@ const isLocalInstall = (successCallback, optionsObj) => {
 					successCallback(optionsObj);
 				}
 				else if (error) {
+					console.log(`Err: ${error}`);
 					// log(pad(`Node modules found, but no package.json. Running global React-cli install`))
-					return;
 				} else {
 					log(`Something very weird happened`);
 				}
 			});
 		} else if (error) {
+			console.log(`Recursing`, error);
 			// node_modules not found, go up a level and recurse
 			options.dir = dir.substring(0, dir.lastIndexOf('/'));
 			isLocalInstall(successCallback, options);
