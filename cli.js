@@ -39,20 +39,32 @@ const main = () => {
 const loadConfigs = type => {
 	log(pad(`Loading config...\n`));
 
-	// Look for a user config, if not found load defaults
-	fs.readFile(`${execDir}/.rcrc.json`, 'utf8', (err, data) => {
-		if (err && err.code === 'ENOENT') {
-			console.log(`Default configuration...\n`);
-			fs.readFile(`${__dirname}/.rcrc.json`, 'utf8', (err, data) => {
-				if (err) {
-					console.log(`Error loading default configuration...`, err);
-					process.exit(0);
-				}
-				componentGenerator(type, args, JSON.parse(data));
-			});
+	// Read config, look for project dir to find userConfig
+	fs.readFile(`${__dirname}/.rcrc.json`, 'utf8', (err, data) => {
+		if (err) {
+			log(`Error loading default configuration...`)
+			log(err);
+			process.exit(0);
 		}
-		else if (!err) {
-			componentGenerator(type, args, JSON.parse(data));
+		const { projectRoot } = JSON.parse(data);
+		if (projectRoot.length !== 0) {
+			// There's a project path, look for config
+			fs.readFile(`${projectRoot}/.rcrc.json`, 'utf8', (err, conf) => {
+				if (err && err.code === 'ENOENT') {
+					componentGenerator(type, args, JSON.parse(data));
+				} else {
+					componentGenerator(type, args, JSON.parse(conf));
+				}
+			});
+		} else {
+			// No project root in config, try reading from execution dir (user created config file without running `rc config`)
+			fs.readFile(`${execDir}/.rcrc.json`, 'utf8', (err, uConf) => {
+				if (err && err.code === 'ENOENT') {
+					componentGenerator(type, args, JSON.parse(data));
+				} else {
+					componentGenerator(type, args, JSON.parse(uConf));
+				}
+			});
 		}
 	});
 }
